@@ -1,0 +1,34 @@
+{
+	"titleSize":40,
+	"nameSize":24,
+	"teams": [
+		{
+			"title": "Programmers",
+			"names": [ "Luiz Felipe" ]
+		},
+		{
+			"title": "2D Art",
+			"names": [ "Luiz Felipe" ]
+		},
+		{
+			"title": "3D Art",
+			"names": [ "Luiz Felipe" ]
+		},
+		{
+			"title": "Localization",
+			"names": [ "Luiz Felipe" ]
+		},
+		{
+			"title": "Tools",
+			"names": [ "Unity", "Microsoft Visual Studio 2019" ]
+		},
+		{
+			"title": "Special Thanks",
+			"names": [ "Kleber, All students" ]
+		},
+		{
+			"title": "Acknowledgment",
+			"names": [ "Fatec Americana" ]
+		}
+	]
+}

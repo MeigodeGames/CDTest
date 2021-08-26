@@ -1,0 +1,60 @@
+{
+    "name": "Controls",
+    "maps": [
+        {
+            "name": "Movement",
+            "id": "397dfbbd-93d9-4647-ba52-bd04dcc764b1",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "a10d5600-c70e-4dfb-9b29-16c548803e5b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "c9d610d8-2bfb-4706-9eae-4942afe33512",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "c7548f61-c2ac-4810-b1c6-6cf57b6aa353",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "68e23524-bb1d-4b3e-b75d-826e84ca0446",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "51acdf52-4764-4fb8-a5ba-ad36a8d1ac62",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
