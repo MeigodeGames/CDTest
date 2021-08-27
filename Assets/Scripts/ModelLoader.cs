@@ -10,8 +10,8 @@ using UnityEngine.Networking;
 public class ModelLoader : MonoBehaviour
 {
     private string m_URL = "https://s3-sa-east-1.amazonaws.com/static-files-prod/unity3d/models.json";
-
-    public Root m_ModelList;
+    private Root m_ObjectList;
+    private GameObject[] m_ModelList;
 
     [System.Serializable]
     public class Model
@@ -28,41 +28,37 @@ public class ModelLoader : MonoBehaviour
         public List<Model> models { get; set; }
     }
 
-
-    // Start is called before the first frame update
     void Start()
     {
-        m_ModelList = new Root();
+        m_ModelList = Resources.LoadAll<GameObject>("FreeFurnitureSet/Prefabs");
         GetModels();
     }
 
     public async void GetModels()
     {
         var result = await new HttpClient().GetStringAsync(m_URL);
+        m_ObjectList = JsonConvert.DeserializeObject<Root>(result);
 
-        m_ModelList = JsonConvert.DeserializeObject<Root>(result);
         CreateModels();
     }
 
     private void CreateModels()
     {
-        foreach (Model model in m_ModelList.models)
+        int i = 0;
+        foreach (Model model in m_ObjectList.models)
         {
             Vector3 position = new Vector3(model.position[0], model.position[1], model.position[2]);
             Vector3 rotation = new Vector3(model.rotation[0], model.rotation[1], model.rotation[2]);
             Vector3 scale = new Vector3(model.scale[0], model.scale[1], model.scale[2]);
 
-            var gameObject = new GameObject(model.name);
+            GameObject gameObject = new GameObject(model.name);
             gameObject.transform.position = position;
             gameObject.transform.eulerAngles = rotation;
             gameObject.transform.localScale = scale;
 
-            /*
-            Debug.Log(model.name);
-            Debug.Log(position);
-            Debug.Log(rotation);
-            Debug.Log(scale);
-            */
+            Instantiate(m_ModelList[i++], gameObject.transform);
+            if (i == m_ModelList.Length) i = 0;
+            
         }
     }
 }
