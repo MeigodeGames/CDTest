@@ -54,13 +54,21 @@
                     "id": "b216cb76-cfe9-4ca8-8bf2-393769320160",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press"
                 },
                 {
                     "name": "Scale",
                     "type": "Value",
                     "id": "af23bc5c-0695-4641-9a91-cea38d9790a5",
                     "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "ColorChange",
+                    "type": "Value",
+                    "id": "6d10e60a-5836-4d48-a2ef-aac92970f962",
+                    "expectedControlType": "Double",
                     "processors": "",
                     "interactions": ""
                 }
@@ -158,7 +166,7 @@
                     "name": "",
                     "id": "8c5fcdd2-0821-40c1-97f9-27ab7322501a",
                     "path": "<Keyboard>/c",
-                    "interactions": "",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": "",
                     "action": "Copy",
@@ -197,6 +205,50 @@
                     "action": "Scale",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "39e8a2bc-cbc3-4389-90f0-e9f3329daebc",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "Scale",
+                    "groups": "",
+                    "action": "ColorChange",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aefefa88-109c-4752-9fd6-23c226713461",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "Scale(factor=2)",
+                    "groups": "",
+                    "action": "ColorChange",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f0a070a2-0c43-4ea0-b91d-dc8e8f189706",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "Scale(factor=3)",
+                    "groups": "",
+                    "action": "ColorChange",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a29ec0b4-b732-4b1d-839a-4081e7b55f78",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "Scale(factor=4)",
+                    "groups": "",
+                    "action": "ColorChange",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

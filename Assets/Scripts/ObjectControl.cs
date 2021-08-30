@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(ColorObject))]
 [RequireComponent(typeof(MoveObject))]
 [RequireComponent(typeof(RotateObject))]
 [RequireComponent(typeof(ModelManager))]
@@ -8,12 +9,14 @@ public class ObjectControl : MonoBehaviour
 {
     public GameObject m_ActiveObject;
 
+    private ColorObject m_ColorBehaviour;
     private MoveObject m_MovementBehaviour;
     private RotateObject m_RotationBehaviour;
     private ModelManager m_ModelManager;
 
     private void Awake()
     {
+        m_ColorBehaviour = GetComponent<ColorObject>();
         m_MovementBehaviour = GetComponent<MoveObject>();
         m_RotationBehaviour = GetComponent<RotateObject>();
         m_ModelManager = GetComponent<ModelManager>();
@@ -43,7 +46,6 @@ public class ObjectControl : MonoBehaviour
     public void OnCopy(InputAction.CallbackContext context)
     {
         if (!m_ActiveObject) return;
-
         if (!context.action.triggered) return;
 
         Vector3 newPosition = m_ActiveObject.transform.position;
@@ -57,6 +59,7 @@ public class ObjectControl : MonoBehaviour
     public void OnScale(InputAction.CallbackContext context)
     {
         if (!m_ActiveObject) return;
+        if (!context.action.triggered) return;
 
         float input = context.ReadValue<float>();
         Vector3 newScale = m_ActiveObject.transform.localScale + Vector3.one * input * 0.2f;
@@ -64,5 +67,13 @@ public class ObjectControl : MonoBehaviour
         if (newScale.magnitude < Vector3.one.magnitude * 0.7) return;
 
         m_ActiveObject.transform.localScale = newScale;
+    }
+
+    public void OnColorChange(InputAction.CallbackContext context)
+    {
+        if (!m_ActiveObject) return;
+        if (!context.action.triggered) return;
+
+        m_ColorBehaviour.ChangeColor(m_ActiveObject, (int)context.ReadValue<float>());
     }
 }
