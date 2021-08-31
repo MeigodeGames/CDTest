@@ -10,6 +10,12 @@ public class ModelManager : MonoBehaviour
 
     public List<GameObject> m_ObjectList;
 
+
+    [System.Serializable]
+    public class RawList
+    {
+        public List<RawModel> models { get; set; }
+    }
     [System.Serializable]
     public class RawModel
     {
@@ -19,29 +25,85 @@ public class ModelManager : MonoBehaviour
         public float[] scale { get; set; }
     }
 
+
+
     [System.Serializable]
-    public class RawList
+    public class UserList
     {
-        public List<RawModel> models { get; set; }
+        public List<UserModel> models { get; set; }
+    }
+    [System.Serializable]
+    public class UserModel
+    {
+        public string name { get; set; }
+        public float[] position { get; set; }
+        public float[] rotation { get; set; }
+        public float[] scale { get; set; }
+        public string color { get; set; }
+        public string texture { get; set; }
     }
 
     private void Awake()
     {
         m_ModelList = Resources.LoadAll<GameObject>("FreeFurnitureSet/Prefabs");
         m_ObjectList = new List<GameObject>();
+        NewScene();
     }
 
-    void Start()
-    {
-        NewList();
-    }
-        
-    public async void NewList()
+
+    private async void NewScene()
     {
         var result = await new HttpClient().GetStringAsync(m_URL);
-        var rawList = JsonConvert.DeserializeObject<RawList>(result);
+        var rawList = JsonConvert.DeserializeObject<RawList>(result.ToString());
 
         CreateModels(rawList);
+    }
+
+    private void LoadScene()
+    {
+        
+    }
+
+    [ContextMenu("Save")]
+    private void SaveScene()
+    {
+        var jsonList = ConvertToUserList(m_ObjectList);
+        Debug.Log(JsonConvert.SerializeObject(jsonList, Formatting.Indented));
+    }
+
+    private UserList ConvertToUserList(List<GameObject> ObjectList)
+    {
+        UserList userList = new UserList();
+        userList.models = new List<UserModel>();
+
+        foreach (GameObject gameObject in m_ObjectList)
+        {
+            UserModel userModel = new UserModel();
+            userModel.name = gameObject.name;
+
+            //Debug.Log(JsonConvert.SerializeObject(gameObject.transform.position, Formatting.Indented));
+            userModel.position = new float[3];
+            userModel.position[0] = gameObject.transform.position.x;
+            userModel.position[1] = gameObject.transform.position.y;
+            userModel.position[2] = gameObject.transform.position.z;
+
+            userModel.rotation = new float[3];
+            userModel.rotation[0] = gameObject.transform.eulerAngles.x;
+            userModel.rotation[1] = gameObject.transform.eulerAngles.y;
+            userModel.rotation[2] = gameObject.transform.eulerAngles.z;
+
+            userModel.scale = new float[3];
+            userModel.scale[0] = gameObject.transform.localScale.x;
+            userModel.scale[1] = gameObject.transform.localScale.y;
+            userModel.scale[2] = gameObject.transform.localScale.z;
+
+            userModel.color = gameObject.GetComponentInChildren<Renderer>().material.color.ToString();
+            userModel.texture = gameObject.GetComponentInChildren<Renderer>().material.mainTexture.ToString();
+
+            userList.models.Add(userModel);
+        }
+
+        return userList;
     }
 
     private void CreateModels(RawList rawList)
@@ -65,16 +127,9 @@ public class ModelManager : MonoBehaviour
         }
     }
 
-    /*
-    private void CreateModels(ObjectList objectList)
+    private void CreateModels(UserList userList)
     {
     }
-    */
 
-    /*
-    public void LoadList()
-    {
-        CreateModels(objectList);
-    }
-    */
+
 }
