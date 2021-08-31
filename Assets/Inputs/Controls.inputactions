@@ -71,6 +71,14 @@
                     "expectedControlType": "Double",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "TextureChange",
+                    "type": "Value",
+                    "id": "068d7767-bebb-4a7e-84db-2929470f7729",
+                    "expectedControlType": "Double",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -241,12 +249,34 @@
                 },
                 {
                     "name": "",
-                    "id": "a29ec0b4-b732-4b1d-839a-4081e7b55f78",
+                    "id": "a8de7a05-6690-43cb-81ad-3b4b17be9495",
                     "path": "<Keyboard>/4",
                     "interactions": "",
-                    "processors": "Scale(factor=4)",
+                    "processors": "Scale",
                     "groups": "",
-                    "action": "ColorChange",
+                    "action": "TextureChange",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ee3357f-0446-4ea9-9813-8e354d6a8289",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "Scale(factor=2)",
+                    "groups": "",
+                    "action": "TextureChange",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "65c0e3c6-67f7-43c6-aa89-f18c5495aecc",
+                    "path": "<Keyboard>/6",
+                    "interactions": "",
+                    "processors": "Scale(factor=3)",
+                    "groups": "",
+                    "action": "TextureChange",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
