@@ -57,7 +57,7 @@ public class ObjectControl : MonoBehaviour
 
         GameObject newModel = Instantiate(m_ActiveObject, newPosition, m_ActiveObject.transform.rotation);
         newModel.transform.SetParent(transform);
-        m_ModelManager.m_ObjectList.Add(newModel);
+        m_ModelManager.AddModel(newModel);
     }
 
     public void OnScale(InputAction.CallbackContext context)

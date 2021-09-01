@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -8,10 +9,7 @@ using UnityEngine;
 public class ModelManager : MonoBehaviour
 {
     private string m_URL = "https://s3-sa-east-1.amazonaws.com/static-files-prod/unity3d/models.json";
-    private GameObject[] m_ModelList;
-
-    public List<GameObject> m_ObjectList;
-
+    private List<GameObject> m_ObjectList;
 
     [System.Serializable]
     public class RawList
@@ -27,8 +25,6 @@ public class ModelManager : MonoBehaviour
         public float[] scale { get; set; }
     }
 
-
-
     [System.Serializable]
     public class UserList
     {
@@ -41,21 +37,21 @@ public class ModelManager : MonoBehaviour
         public float[] position { get; set; }
         public float[] rotation { get; set; }
         public float[] scale { get; set; }
-        public string color { get; set; }
-        public string texture { get; set; }
+        public string modelName { get; set; }
+        public string modelColor { get; set; }
+        public string modelTexture { get; set; }
     }
 
     private void Awake()
     {
-        m_ModelList = Resources.LoadAll<GameObject>("FreeFurnitureSet/Prefabs");
         m_ObjectList = new List<GameObject>();
     }
 
     [ContextMenu("New")]
     private async void NewScene()
     {
-        var result = await new HttpClient().GetStringAsync(m_URL);
-        var rawList = JsonConvert.DeserializeObject<RawList>(result.ToString());
+        string result = await new HttpClient().GetStringAsync(m_URL);
+        RawList rawList = JsonConvert.DeserializeObject<RawList>(result.ToString());
 
         CreateModels(rawList);
     }
@@ -63,6 +59,9 @@ public class ModelManager : MonoBehaviour
     [ContextMenu("Load")]
     private void LoadScene()
     {
+        foreach (Transform child in transform)
+            Destroy(child.gameObject);
+
         string destination = Application.persistentDataPath + "/save.json";
 
         if (!File.Exists(destination))
@@ -70,25 +69,21 @@ public class ModelManager : MonoBehaviour
             Debug.Log("Sem arquivo salvo para carregar");
             return;
         }
-        /*
-        if (File.Exists(destination)) file = File.OpenWrite(destination);
-        else
-        {
-            Debug.Log("Sem arquivo salvo para carregar");
-            return;
-        }
-        */
-        Debug.Log("Abrindo arquivo");
+
         string jsonText = File.ReadAllText(destination);
-        Debug.Log(jsonText);
-        var userList = JsonConvert.DeserializeObject<UserList>(File.ReadAllText(destination));
+        UserList userList = JsonConvert.DeserializeObject<UserList>(File.ReadAllText(destination));
         CreateModels(userList);
+    }
+
+    public void AddModel(GameObject newModel)
+    {
+        m_ObjectList.Add(newModel);
     }
 
     [ContextMenu("Save")]
     private void SaveScene()
     {
-        var jsonList = ConvertToUserList(m_ObjectList);
+        UserList jsonList = ConvertToUserList(m_ObjectList);
         string destination = Application.persistentDataPath + "/save.json";
         string jsonText = JsonConvert.SerializeObject(jsonList, Formatting.Indented);
 
@@ -105,7 +100,6 @@ public class ModelManager : MonoBehaviour
             UserModel userModel = new UserModel();
             userModel.name = gameObject.name;
 
-            //Debug.Log(JsonConvert.SerializeObject(gameObject.transform.position, Formatting.Indented));
             userModel.position = new float[3];
             userModel.position[0] = gameObject.transform.position.x;
             userModel.position[1] = gameObject.transform.position.y;
@@ -121,13 +115,9 @@ public class ModelManager : MonoBehaviour
             userModel.scale[1] = gameObject.transform.localScale.y;
             userModel.scale[2] = gameObject.transform.localScale.z;
 
-            //userModel.color = gameObject.GetComponentInChildren<Renderer>().material.color.ToString();
-            userModel.color = "#" + ColorUtility.ToHtmlStringRGB(gameObject.GetComponentInChildren<Renderer>().material.color);
-
-            userModel.texture = AssetDatabase.GetAssetPath(gameObject.GetComponentInChildren<Renderer>().material.mainTexture);
-            Debug.Log(userModel.texture);
-
-            //userModel.texture = gameObject.GetComponentInChildren<Renderer>().material.mainTexture.ToString();
+            userModel.modelName = gameObject.GetComponentInChildren<MeshFilter>().sharedMesh.name;
+            userModel.modelColor = "#" + ColorUtility.ToHtmlStringRGB(gameObject.GetComponentInChildren<Renderer>().material.color);
+            userModel.modelTexture = AssetDatabase.GetAssetPath(gameObject.GetComponentInChildren<Renderer>().material.mainTexture);
 
             userList.models.Add(userModel);
         }
@@ -137,7 +127,9 @@ public class ModelManager : MonoBehaviour
 
     private void CreateModels(RawList rawList)
     {
+        GameObject[] m_ModelList = Resources.LoadAll<GameObject>("FreeFurnitureSet/Prefabs");
         int i = 0;
+
         foreach (RawModel model in rawList.models)
         {
             Vector3 position = new Vector3(model.position[0], model.position[1], model.position[2]);
@@ -160,32 +152,30 @@ public class ModelManager : MonoBehaviour
 
     private void CreateModels(UserList userList)
     {
-        int i = 0;
         foreach (UserModel model in userList.models)
         {
             Vector3 position = new Vector3(model.position[0], model.position[1], model.position[2]);
             Vector3 rotation = new Vector3(model.rotation[0], model.rotation[1], model.rotation[2]);
             Vector3 scale = new Vector3(model.scale[0], model.scale[1], model.scale[2]);
 
-            if (!ColorUtility.TryParseHtmlString(model.color, out Color color))
+            if (!ColorUtility.TryParseHtmlString(model.modelColor, out Color color))
             {
                 Debug.Log("Falha carregando cor");
             }
 
-            string textureAsset = (Path.ChangeExtension(model.texture, null)).Replace("Assets/Resources/", "");
+            string textureAsset = (Path.ChangeExtension(model.modelTexture, null)).Replace("Assets/Resources/", "");
             Texture texture = Resources.Load<Texture>(textureAsset);
 
             GameObject gameObject = new GameObject(model.name);
-            //GameObject gameObject = Instantiate(m_ModelList[i++])
-            //gameObject.name = model.name;
             gameObject.transform.position = position;
             gameObject.transform.eulerAngles = rotation;
             gameObject.transform.localScale = scale;
 
             gameObject.transform.SetParent(transform);
 
-            Instantiate(m_ModelList[i++], gameObject.transform);
-            if (i == m_ModelList.Length) i = 0;
+
+            GameObject prefab = Resources.Load<GameObject>("FreeFurnitureSet/Prefabs/" + model.modelName);
+            Instantiate(prefab, gameObject.transform);
 
             gameObject.GetComponentInChildren<Renderer>().material.SetColor("_Color", color);
             gameObject.GetComponentInChildren<Renderer>().material.SetTexture("_MainTex", texture);
@@ -193,6 +183,5 @@ public class ModelManager : MonoBehaviour
             m_ObjectList.Add(gameObject);
         }
     }
-
 
 }
