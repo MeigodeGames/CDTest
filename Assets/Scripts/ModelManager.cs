@@ -1,6 +1,8 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
+using UnityEditor;
 using UnityEngine;
 
 public class ModelManager : MonoBehaviour
@@ -47,10 +49,9 @@ public class ModelManager : MonoBehaviour
     {
         m_ModelList = Resources.LoadAll<GameObject>("FreeFurnitureSet/Prefabs");
         m_ObjectList = new List<GameObject>();
-        NewScene();
     }
 
-
+    [ContextMenu("New")]
     private async void NewScene()
     {
         var result = await new HttpClient().GetStringAsync(m_URL);
@@ -59,16 +60,39 @@ public class ModelManager : MonoBehaviour
         CreateModels(rawList);
     }
 
+    [ContextMenu("Load")]
     private void LoadScene()
     {
-        
+        string destination = Application.persistentDataPath + "/save.json";
+
+        if (!File.Exists(destination))
+        {
+            Debug.Log("Sem arquivo salvo para carregar");
+            return;
+        }
+        /*
+        if (File.Exists(destination)) file = File.OpenWrite(destination);
+        else
+        {
+            Debug.Log("Sem arquivo salvo para carregar");
+            return;
+        }
+        */
+        Debug.Log("Abrindo arquivo");
+        string jsonText = File.ReadAllText(destination);
+        Debug.Log(jsonText);
+        var userList = JsonConvert.DeserializeObject<UserList>(File.ReadAllText(destination));
+        CreateModels(userList);
     }
 
     [ContextMenu("Save")]
     private void SaveScene()
     {
         var jsonList = ConvertToUserList(m_ObjectList);
-        Debug.Log(JsonConvert.SerializeObject(jsonList, Formatting.Indented));
+        string destination = Application.persistentDataPath + "/save.json";
+        string jsonText = JsonConvert.SerializeObject(jsonList, Formatting.Indented);
+
+        File.WriteAllText(destination, jsonText);
     }
 
     private UserList ConvertToUserList(List<GameObject> ObjectList)
@@ -97,8 +121,13 @@ public class ModelManager : MonoBehaviour
             userModel.scale[1] = gameObject.transform.localScale.y;
             userModel.scale[2] = gameObject.transform.localScale.z;
 
-            userModel.color = gameObject.GetComponentInChildren<Renderer>().material.color.ToString();
-            userModel.texture = gameObject.GetComponentInChildren<Renderer>().material.mainTexture.ToString();
+            //userModel.color = gameObject.GetComponentInChildren<Renderer>().material.color.ToString();
+            userModel.color = "#" + ColorUtility.ToHtmlStringRGB(gameObject.GetComponentInChildren<Renderer>().material.color);
+
+            userModel.texture = AssetDatabase.GetAssetPath(gameObject.GetComponentInChildren<Renderer>().material.mainTexture);
+            Debug.Log(userModel.texture);
+
+            //userModel.texture = gameObject.GetComponentInChildren<Renderer>().material.mainTexture.ToString();
 
             userList.models.Add(userModel);
         }
@@ -120,6 +149,8 @@ public class ModelManager : MonoBehaviour
             gameObject.transform.eulerAngles = rotation;
             gameObject.transform.localScale = scale;
 
+            gameObject.transform.SetParent(transform);
+
             Instantiate(m_ModelList[i++], gameObject.transform);
             if (i == m_ModelList.Length) i = 0;
 
@@ -129,6 +160,38 @@ public class ModelManager : MonoBehaviour
 
     private void CreateModels(UserList userList)
     {
+        int i = 0;
+        foreach (UserModel model in userList.models)
+        {
+            Vector3 position = new Vector3(model.position[0], model.position[1], model.position[2]);
+            Vector3 rotation = new Vector3(model.rotation[0], model.rotation[1], model.rotation[2]);
+            Vector3 scale = new Vector3(model.scale[0], model.scale[1], model.scale[2]);
+
+            if (!ColorUtility.TryParseHtmlString(model.color, out Color color))
+            {
+                Debug.Log("Falha carregando cor");
+            }
+
+            string textureAsset = (Path.ChangeExtension(model.texture, null)).Replace("Assets/Resources/", "");
+            Texture texture = Resources.Load<Texture>(textureAsset);
+
+            GameObject gameObject = new GameObject(model.name);
+            //GameObject gameObject = Instantiate(m_ModelList[i++])
+            //gameObject.name = model.name;
+            gameObject.transform.position = position;
+            gameObject.transform.eulerAngles = rotation;
+            gameObject.transform.localScale = scale;
+
+            gameObject.transform.SetParent(transform);
+
+            Instantiate(m_ModelList[i++], gameObject.transform);
+            if (i == m_ModelList.Length) i = 0;
+
+            gameObject.GetComponentInChildren<Renderer>().material.SetColor("_Color", color);
+            gameObject.GetComponentInChildren<Renderer>().material.SetTexture("_MainTex", texture);
+
+            m_ObjectList.Add(gameObject);
+        }
     }
 
 

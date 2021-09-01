@@ -56,6 +56,7 @@ public class ObjectControl : MonoBehaviour
         newPosition.z += 2;
 
         GameObject newModel = Instantiate(m_ActiveObject, newPosition, m_ActiveObject.transform.rotation);
+        newModel.transform.SetParent(transform);
         m_ModelManager.m_ObjectList.Add(newModel);
     }
 
