@@ -2,33 +2,6 @@
     "name": "Controls",
     "maps": [
         {
-            "name": "UI",
-            "id": "c7548f61-c2ac-4810-b1c6-6cf57b6aa353",
-            "actions": [
-                {
-                    "name": "Rotate",
-                    "type": "Value",
-                    "id": "68e23524-bb1d-4b3e-b75d-826e84ca0446",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": ""
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "51acdf52-4764-4fb8-a5ba-ad36a8d1ac62",
-                    "path": "<Mouse>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Rotate",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
             "name": "Keyboard",
             "id": "209fc7eb-24de-4525-8d5c-839a56c6592e",
             "actions": [
@@ -77,6 +50,14 @@
                     "type": "Value",
                     "id": "068d7767-bebb-4a7e-84db-2929470f7729",
                     "expectedControlType": "Double",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "12da493a-7ab2-4a9e-9894-932fc0b23eaa",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 }
@@ -169,6 +150,17 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "a2e59d1d-166c-4c8e-aa95-aa5dacb0ecff",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "",
@@ -277,6 +269,17 @@
                     "processors": "Scale(factor=3)",
                     "groups": "",
                     "action": "TextureChange",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "de98de5d-4e80-44f6-a2bb-27987abac756",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -48,7 +48,7 @@ public class ModelManager : MonoBehaviour
     }
 
     [ContextMenu("New")]
-    private async void NewScene()
+    public async void NewScene()
     {
         string result = await new HttpClient().GetStringAsync(m_URL);
         RawList rawList = JsonConvert.DeserializeObject<RawList>(result.ToString());
@@ -57,7 +57,7 @@ public class ModelManager : MonoBehaviour
     }
 
     [ContextMenu("Load")]
-    private void LoadScene()
+    public void LoadScene()
     {
         foreach (Transform child in transform)
             Destroy(child.gameObject);
@@ -81,7 +81,7 @@ public class ModelManager : MonoBehaviour
     }
 
     [ContextMenu("Save")]
-    private void SaveScene()
+    public void SaveScene()
     {
         UserList jsonList = ConvertToUserList(m_ObjectList);
         string destination = Application.persistentDataPath + "/save.json";
@@ -146,6 +146,7 @@ public class ModelManager : MonoBehaviour
             Instantiate(m_ModelList[i++], gameObject.transform);
             if (i == m_ModelList.Length) i = 0;
 
+            gameObject.AddComponent<BoxCollider>();
             m_ObjectList.Add(gameObject);
         }
     }
@@ -180,6 +181,7 @@ public class ModelManager : MonoBehaviour
             gameObject.GetComponentInChildren<Renderer>().material.SetColor("_Color", color);
             gameObject.GetComponentInChildren<Renderer>().material.SetTexture("_MainTex", texture);
 
+            gameObject.AddComponent<BoxCollider>();
             m_ObjectList.Add(gameObject);
         }
     }

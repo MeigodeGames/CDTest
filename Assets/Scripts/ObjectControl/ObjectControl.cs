@@ -88,4 +88,22 @@ public class ObjectControl : MonoBehaviour
 
         m_TextureBehaviour.ChangeTexture(m_ActiveObject, (int)context.ReadValue<float>());
     }
+
+    public void OnSelect(InputAction.CallbackContext context)
+    {
+        if (!context.action.triggered) return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            m_ActiveObject = hit.transform.gameObject;
+        }
+        /*
+        else
+        {
+            m_ActiveObject = null;
+        }
+        */
+    }
 }
